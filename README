@@ -1,0 +1,32 @@
+## graphical drag and drop editor for espeasy rules
+
+warning: only works in chrome
+
+### installation
+
+There are two options, 
+
+1) if you have enough space on your esp (20kb) you can upload `dist/editor_inline.htm/editor.htm`
+2) if you don't have enough space, but your esp has internet connection, upload `dist/editor.htm`
+(all javascript files will be served using www.jsdelivr.com cdn), file size is less than 2kb in this case
+
+- go to http://your-esp-ip/upload select the correct `editor.htm` (look into above options) and click upload. 
+(ignore the warning that file must be named config.dat, also ignore the recommendation to reboot)
+- once uploaded go to http://your-esp-ip/editor.htm
+
+
+### using
+
+Editor shows you the list of available nodes on your right. The list contains fixed commands and variable commands which depend on devices you have configured in espeasy.
+
+The UI is drag and drop. Drag a node from your right side to center of the screen. When you add more nodes you can connect them. Always connect from node output to node input. Only a single connection is allowed from one ouput. Inputs can accept multiple connections.
+
+You can move existing nodes around by drag/drop. You can delete existing nodes by right clicking on them. You can delete existing connections by right clicking in the output box (where connection starts).
+
+Once done you can click `export chart` to see the produced rule. You can also click `save chart` which will upload rule to espeasy and also store current configuration for next time. When you come to editor the next time you will see the same configuration you saved.
+
+### current limitations
+
+- [ ] missing commands/features/devices (not everything from espeasy rule engine is supported)
+- [ ] only a single rule (rule 1) can be edited
+- [ ] only works in latest chrome
