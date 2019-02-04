@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="styles.css" inline>
+        <script src="floweditor.js" inline></script>
+        <script src="node_definitions.js" inline></script>
+        <script src="espeasy.js" inline></script>
+    </head>
+    <body>
+        <div class="editor">
+        </div>
+        <script>
+            getConfigNodes().then(devices => {
+                devices.forEach(device => nodes.unshift(device));
+
+                const chart = new FlowEditor(".editor", nodes, (config, rules) => {
+                    storeConfig(config);
+                    storeRule(rules);
+                });
+
+                loadConfig().then(config => {
+                    chart.loadConfig(config);
+                });
+            });
+            
+        </script>
+    </body>
+</html>
