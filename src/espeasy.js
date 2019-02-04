@@ -48,7 +48,7 @@ const getConfigNodes = async () => {
                     'MCP23017': 'MCP',
                 };
                 fnName = fnNames[device.Type];
-                results.push({
+                result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - GPIO`,
                     inputs: [1],
@@ -65,7 +65,7 @@ const getConfigNodes = async () => {
                     toString: function () { return `${device.TaskName}.pin${this.config[0].value} = ${this.config[1].value}`; },
                     toDsl: function () { return [`${fnName}GPIO,${this.config[0].value},${this.config[1].value}`]; }
                 });
-                results.push({
+                result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - Pulse`,
                     inputs: [1],
@@ -97,7 +97,7 @@ const getConfigNodes = async () => {
                 });
                 break;
             case 'ProMiniExtender':
-                results.push({
+                result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - GPIO`,
                     inputs: [1],
@@ -122,7 +122,7 @@ const getConfigNodes = async () => {
                     'LCDDisplay': 'LCD',
                 };
                 fnName = fnNames[device.Type];
-                results.push({
+                result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - Write`,
                     inputs: [1],
@@ -144,7 +144,7 @@ const getConfigNodes = async () => {
                 });
                 break;
             case 'Generic - Dummy Device':
-                results.push({
+                result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - Write`,
                     inputs: [1],

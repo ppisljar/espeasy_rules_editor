@@ -126,6 +126,85 @@ const nodes = [
         }
     }, {
         group: 'ACTIONS',
+        type: 'Pulse',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'gpio',
+            type: 'select',
+            values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+            value: 0
+        }, {
+            name: 'value',
+            type: 'select',
+            values: [0, 1],
+            value: 1
+        }, {
+            name: 'unit',
+            type: 'select',
+            values: ['s', 'ms'],
+            value: 'ms',
+        }, {
+            name: 'duration',
+            type: 'number',
+            value: 1000
+        }],
+        toString: function() {
+            return `Pulse ${this.config[0].value}=${this.config[1].value} for ${this.config[3].value}${this.config[2].value}`;
+        },
+        toDsl: function() {
+            const fn = this.config[2].value === 's' ? 'LongPulse' : 'Pulse';
+            return [`${fn},${this.config[0].value},${this.config[1].value},${this.config[2].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
+        type: 'PWM',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'gpio',
+            type: 'select',
+            values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            value: 0
+        }, {
+            name: 'value',
+            type: 'number',
+            value: 1023,
+        }],
+        toString: function() {
+            return `PWM.GPIO${this.config[0].value} = ${this.config[1].value}`;
+        },
+        toDsl: function() {
+            return [`PWM,${this.config[0].value},${this.config[1].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
+        type: 'SERVO',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'gpio',
+            type: 'select',
+            values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+            value: 0
+        }, {
+            name: 'servo',
+            type: 'select',
+            values: [1, 2],
+            value: 0
+        }, {
+            name: 'position',
+            type: 'number',
+            value: 90,
+        }],
+        toString: function() {
+            return `SERVO.GPIO${this.config[0].value} = ${this.config[2].value}`;
+        },
+        toDsl: function() {
+            return [`Servo,${this.config[1].value},${this.config[0].value},${this.config[2].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
         type: 'fire event',
         inputs: [1],
         outputs: [1],
@@ -145,7 +224,7 @@ const nodes = [
         inputs: [1],
         outputs: [1],
         config: [{
-            name: 'gpio',
+            name: 'timer',
             type: 'select',
             values: [1, 2, 3, 4, 5, 6, 7, 8],
         }, {
@@ -163,9 +242,79 @@ const nodes = [
         type: 'MQTT',
         inputs: [1],
         outputs: [1],
-        config: [],
+        config: [{
+            name: 'topic',
+            type: 'text',
+        }, {
+            name: 'command',
+            type: 'text',
+        }],
         toString: function() {
-            return 'mqtt';
+            return `mqtt ${this.config[1].value}`;
+        },
+        toDsl: function() {
+            return [`Publish ${this.config[0].value},${this.config[1].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
+        type: 'UDP',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'ip',
+            type: 'text',
+        }, {
+            name: 'port',
+            type: 'number',
+        }, {
+            name: 'command',
+            type: 'text',
+        }],
+        toString: function() {
+            return `UDP ${this.config[1].value}`;
+        },
+        toDsl: function() {
+            return [`SendToUDP ${this.config[0].value},${this.config[1].value},${this.config[2].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
+        type: 'HTTP',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'host',
+            type: 'text',
+        }, {
+            name: 'port',
+            type: 'number',
+            value: 80
+        }, {
+            name: 'url',
+            type: 'text',
+        }],
+        toString: function() {
+            return `HTTP ${this.config[2].value}`;
+        },
+        toDsl: function() {
+            return [`SentToHTTP ${this.config[0].value},${this.config[1].value},${this.config[2].value}\n`];
+        }
+    }, {
+        group: 'ACTIONS',
+        type: 'ESPEASY',
+        inputs: [1],
+        outputs: [1],
+        config: [{
+            name: 'device',
+            type: 'number',
+        }, {
+            name: 'command',
+            type: 'text',
+        }],
+        toString: function() {
+            return `mqtt ${this.config[1].value}`;
+        },
+        toDsl: function() {
+            return [`SendTo ${this.config[0].value},${this.config[1].value}\n`];
         }
     }
 ]
