@@ -52,8 +52,17 @@ gulp.task('pages', function() {
         collapseWhitespace: true,
         removeComments: true
       }))
-      .pipe(inlinesource())
       .pipe(gulp.dest('./dist'));
+  });
+
+gulp.task('pagesinline', function() {
+    return gulp.src(['./src/editor.htm'])
+      .pipe(htmlmin({
+        collapseWhitespace: true,
+        removeComments: true
+      }))
+      .pipe(inlinesource())
+      .pipe(gulp.dest('./dist/editor_inline.htm'));
   });
 
 // Clean output directory
@@ -64,6 +73,7 @@ gulp.task('default', ['clean'], function () {
   runSequence(
     'styles',
     'scripts',
-    'pages'
+    'pages',
+    'pagesinline'
   );
 });

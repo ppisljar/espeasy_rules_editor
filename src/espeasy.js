@@ -23,9 +23,9 @@ const getConfigNodes = async () => {
             toDsl: function () { return [`on ${this.type}#${this.config[0].value}=${this.config[1].value} do\n%%output%%\nEndon\n`]; }
         }];
 
-        let fnNames, fnName;
+        let fnNames, fnName, name;
         switch (device.Type) {
-            case 'Regulator':
+            case 'Regulator - Level Control':
                 result.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - setlevel`,
@@ -143,7 +143,7 @@ const getConfigNodes = async () => {
                     toDsl: function () { return [`${fnName},${this.config[0].value},${this.config[1].value},${this.config[2].value}`]; }
                 });
                 break;
-            case 'Dummy Device':
+            case 'Generic - Dummy Device':
                 results.push({
                     group: 'ACTIONS',
                     type: `${device.TaskName} - Write`,
