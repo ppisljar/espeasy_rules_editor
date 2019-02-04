@@ -76,15 +76,14 @@ const exportChart = renderedNodes => {
             let ruleset = '';
             let padding = r.indent ? '  ' : '';
             
-            
             r.outputs.forEach((out, outI) => {
-                let rule = rules[outI] || r.type + '\n';
-                
+                let rule = rules[outI] || r.type;
                 let subrule = '';
                 if (out.lines) {
                     out.lines.forEach(line => {
                         subrule += walkRule(line.input.nodeObject, r.indent ? i + 1 : i);
                     });
+                    subrule = subrule.split('\n').map(line => (padding + line)).filter(line => line.trim() !== '').join('\n') + '\n';
                 } 
                 if (rule.includes('%%output%%')) {
                     rule = rule.replace('%%output%%', subrule);
@@ -92,8 +91,7 @@ const exportChart = renderedNodes => {
                     rule += subrule;
                 }
                 ruleset += rule;
-            })
-            ruleset = ruleset.split('\n').map(line => (padding + line)).join('\n');
+            });
             
             return ruleset;
         }
@@ -185,16 +183,18 @@ class NodeUI extends Node {
             this.element.style.top = `${ev.y - shiftY}px`;
             this.element.style.left = `${ev.x - shiftX}px`; 
             this.inputs.forEach(input => {
+                const rect = input.getBoundingClientRect();
                 input.lines.forEach(line => {
-                    const x2 = line.end.x - (startX - ev.x);
-                    const y2 = line.end.y - (startY - ev.y);
+                    const x2 = rect.x;
+                    const y2 = rect.y + rect.height/2;
                     line.svg.setPath(line.start.x, line.start.y, x2, y2);
                 });
             });
             this.outputs.forEach(output => {
+                const rect = output.getBoundingClientRect();
                 output.lines.forEach(line => {
-                    const x1 = line.start.x - (startX - ev.x);
-                    const y1 = line.start.y - (startY - ev.y);
+                    const x1 = rect.x + rect.width;
+                    const y1 = rect.y + rect.height/2;
                     line.svg.setPath(x1, y1, line.end.x, line.end.y);
                 });
             });
@@ -296,8 +296,9 @@ class NodeUI extends Node {
             output.onmousedown = ev => {
                 ev.stopPropagation();
                 if (output.lines.length) return;
-                const x1 = ev.pageX;
-                const y1 = ev.pageY;
+                const rects = output.getBoundingClientRect();
+                const x1 = rects.x + rects.width;
+                const y1 = rects.y + rects.height/2;
 
                 const lineSvg = new svgArrow(document.body.clientWidth, document.body.clientHeight, 'none', color);
                 this.canvas.appendChild(lineSvg.element);
@@ -312,12 +313,16 @@ class NodeUI extends Node {
                     if (!input) {
                         lineSvg.element.remove();
                     } else {
+                        const inputRect = input.getBoundingClientRect();
+                        const x2 = inputRect.x;
+                        const y2 = inputRect.y + inputRect.height/2;
+                        lineSvg.setPath(x1, y1, x2, y2);
                         const connection = {
                             output,
                             input,
                             svg: lineSvg,
                             start: { x: x1, y: y1 },
-                            end: { x: ev.pageX, y: ev.pageY },
+                            end: { x: x2, y: y2 },
                         };
                         output.lines.push(connection);
                         input.lines.push(connection);
@@ -343,17 +348,17 @@ const getCfgUI = cfg => {
     const template = document.createElement('template');
     switch (cfg.type) {
         case 'text':
-            template.innerHTML = `${cfg.name}: <input type='text' name='${cfg.name}' value='${cfg.value}' />`;
+            template.innerHTML = `<div>${cfg.name}: <input type='text' name='${cfg.name}' value='${cfg.value}' /></div>`;
             break;
         case 'number':
-            template.innerHTML = `${cfg.name}: <input type='number' name='${cfg.name}' value='${cfg.value}' />`;
+            template.innerHTML = `<div>${cfg.name}: <input type='number' name='${cfg.name}' value='${cfg.value}' /></div>`;
             break;
         case 'select':
             const getSelectOptions = val => {
                 const selected = val == cfg.value ? 'selected' : '';
                 return `<option ${selected}>${val}</option>`;
             }
-            template.innerHTML = `${cfg.name}: <select name='${cfg.name}'>${cfg.values.map(val => (getSelectOptions(val)))}</select>`;
+            template.innerHTML = `<div>${cfg.name}: <select name='${cfg.name}'>${cfg.values.map(val => (getSelectOptions(val)))}</select></div>`;
             break;
     }
     return template.content.cloneNode(true);
@@ -364,7 +369,7 @@ const showConfigBox = (type, config, onclose) => {
     template.innerHTML = `
         <div class='configbox'>
             <div class="configbox-title">${type}</div>
-            <form class="configbox-body" name=configform>
+            <form class="configbox-body" name=configform onsubmit="return false;">
             </form>
             <div class="configbox-footer">
                 <button id=ob>OK</button>
@@ -438,7 +443,7 @@ class FlowEditor {
         this.debug = document.createElement('div');
         this.debug.className = 'debug';
 
-        const text = document.createElement('span');
+        const text = document.createElement('div');
         this.debug.appendChild(text);
 
         const saveBtn = document.createElement('button');

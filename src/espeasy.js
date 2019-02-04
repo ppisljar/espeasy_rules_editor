@@ -179,7 +179,7 @@ const storeConfig = async (config) => {
 }
 
 const loadConfig = async () => {
-    return await fetch('/r1.txt');
+    return await fetch('/r1.txt').then(response => response.json());
 }
 
 const storeRule = async (rule) => {

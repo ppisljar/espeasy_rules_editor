@@ -69,23 +69,21 @@ const nodes = [
         outputs: [1, 2],
         config: [{
             name: 'variable',
-            type: 'select',
-            values: ['TEMP#Output', 'SW1#Switch']
+            type: 'text',
         },{
             name: 'equality',
             type: 'select',
             values: ['=', '<', '>']
         },{
             name: 'value',
-            type: 'number',
-            values: [0, 1]
+            type: 'text',
         }],
         indent: true,
         toString: function() {
             return `IF ${this.config[0].value}${this.config[1].value}${this.config[2].value}`;
         },
         toDsl: function() {
-            return [`If [${this.config[0].value}]${this.config[1].value}${this.config[2].value}\n%%output%%\n`, `Else\n%%output%%\nEndif\n`];
+            return [`If [${this.config[0].value}]${this.config[1].value}${this.config[2].value}\n%%output%%`, `Else\n%%output%%\nEndif`];
         }
     }, {
         group: 'LOGIC',
