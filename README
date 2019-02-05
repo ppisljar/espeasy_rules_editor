@@ -1,6 +1,6 @@
 ## graphical drag and drop editor for espeasy rules
 
-warning: only works in chrome
+warning: only works in chrome and firefox
 
 ### installation
 
@@ -29,4 +29,3 @@ Once done you can click `export chart` to see the produced rule. You can also cl
 
 - [ ] missing commands/features/devices (not everything from espeasy rule engine is supported)
 - [ ] only a single rule (rule 1) can be edited
-- [ ] only works in latest chrome
