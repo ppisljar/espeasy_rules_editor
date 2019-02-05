@@ -17,6 +17,7 @@
     "gulp-inline-source": "^4.0.0",
     "gulp-uglify": "^2.0.0",
     "gulp-uglify-es": "^1.0.4",
+    "gulp-url-prefixer": "0.0.6",
     "gulp-util": "^3.0.8",
     "run-sequence": "^1.2.2"
   },

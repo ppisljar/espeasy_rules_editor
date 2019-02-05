@@ -174,44 +174,34 @@ class NodeUI extends Node {
         this.indent = conf.indent;
     }
 
+    updateInputsOutputs(inputs, outputs) {
+        inputs.forEach(input => {
+            const rect = input.getBoundingClientRect();
+            input.lines.forEach(line => {
+                line.end.x = rect.x;
+                line.end.y = rect.y + rect.height/2;
+                line.svg.setPath(line.start.x, line.start.y, line.end.x, line.end.y);
+            });
+        });
+        outputs.forEach(output => {
+            const rect = output.getBoundingClientRect();
+            output.lines.forEach(line => {
+                line.start.x = rect.x + rect.width;
+                line.start.y = rect.y + rect.height/2;
+                line.svg.setPath(line.start.x, line.start.y, line.end.x, line.end.y);
+            });
+        });
+    }
+
     handleMoveEvent(ev) {
-        const shiftX = event.clientX - this.element.getBoundingClientRect().left;
-        const shiftY = event.clientY - this.element.getBoundingClientRect().top;
-        const startX = event.clientX;
-        const startY = event.clientY;
+        const shiftX = ev.clientX - this.element.getBoundingClientRect().left;
+        const shiftY = ev.clientY - this.element.getBoundingClientRect().top;
         const onMouseMove = ev => {
             this.element.style.top = `${ev.y - shiftY}px`;
             this.element.style.left = `${ev.x - shiftX}px`; 
-            this.inputs.forEach(input => {
-                const rect = input.getBoundingClientRect();
-                input.lines.forEach(line => {
-                    const x2 = rect.x;
-                    const y2 = rect.y + rect.height/2;
-                    line.svg.setPath(line.start.x, line.start.y, x2, y2);
-                });
-            });
-            this.outputs.forEach(output => {
-                const rect = output.getBoundingClientRect();
-                output.lines.forEach(line => {
-                    const x1 = rect.x + rect.width;
-                    const y1 = rect.y + rect.height/2;
-                    line.svg.setPath(x1, y1, line.end.x, line.end.y);
-                });
-            });
+            this.updateInputsOutputs(this.inputs, this.outputs);
         }
         const onMouseUp = ev => {
-            this.inputs.forEach(input => {
-                input.lines.forEach(line => {
-                    line.end.x -= (startX - ev.x);
-                    line.end.y -= (startY - ev.y);
-                });
-            });
-            this.outputs.forEach(output => {
-                output.lines.forEach(line => {
-                    line.start.x -= (startX - ev.x);
-                    line.start.y -= (startY - ev.y);
-                });
-            });
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);   
         }
@@ -230,18 +220,21 @@ class NodeUI extends Node {
     handleRightClickEvent(ev) {
         this.inputs.forEach(input => {
             input.lines.forEach(line => {
+                line.output.lines = [];
                 line.svg.element.parentNode.removeChild(line.svg.element);
             });
             input.lines = [];
         });
         this.outputs.forEach(output => {
             output.lines.forEach(line => {
+                const index = line.input.lines.indexOf(line);
+                line.input.lines.splice(index, 1);
                 line.svg.element.parentNode.removeChild(line.svg.element);
             });
             output.lines = [];
         });
         this.element.parentNode.removeChild(this.element);
-        this.destroy();
+        if (this.destroy) this.destroy();
         ev.preventDefault();
         ev.stopPropagation();
         return false;

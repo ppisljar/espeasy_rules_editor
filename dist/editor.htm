@@ -1,16 +1,12 @@
-<html><head>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/styles.css">
-<script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/floweditor.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/node_definitions.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/espeasy.js"></script></head><body><div class="editor"></div>
-<script>
-getConfigNodes().then(devices => {
-    devices.forEach(device => nodes.unshift(device));
-    const chart = new FlowEditor(".editor", nodes, (config, rules) => {
-        storeConfig(config);
-        storeRule(rules);
-    });
-    loadConfig().then(config => {
-        chart.loadConfig(config);
-    });
-});</script></body></html>
+<html><head><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/styles.css" inline><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/floweditor.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/node_definitions.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/espeasy.js" inline></script></head><body><div class="editor"></div><script>getConfigNodes().then(devices => {
+                devices.forEach(device => nodes.unshift(device));
+
+                const chart = new FlowEditor(".editor", nodes, (config, rules) => {
+                    storeConfig(config);
+                    storeRule(rules);
+                });
+
+                loadConfig().then(config => {
+                    chart.loadConfig(config);
+                });
+            });</script></body></html>

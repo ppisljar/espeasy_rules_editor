@@ -8,6 +8,7 @@ var htmlmin = require('gulp-htmlmin');
 var runSequence = require('run-sequence');
 var uglify = require('gulp-uglify-es').default;
 var inlinesource = require('gulp-inline-source');
+const urlPrefixer = require('gulp-url-prefixer');
 var gutil = require('gulp-util');
 
 // Set the browser that you want to support
@@ -27,7 +28,7 @@ const AUTOPREFIXER_BROWSERS = [
 gulp.task('styles', function () {
     return gulp.src('./src/styles.css')
       // Auto-prefix css styles for cross browser compatibility
-      //.pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+      .pipe(autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
       // Minify the file
       .pipe(csso())
       // Output
@@ -48,6 +49,9 @@ gulp.task('scripts', function() {
 // Gulp task to minify HTML files
 gulp.task('pages', function() {
     return gulp.src(['./src/editor.htm'])
+      .pipe(urlPrefixer.html({
+        prefix: 'https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/'
+      }))
       .pipe(htmlmin({
         collapseWhitespace: true,
         removeComments: true
