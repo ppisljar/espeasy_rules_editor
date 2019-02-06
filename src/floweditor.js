@@ -27,13 +27,17 @@ const saveChart = renderedNodes => {
 
 const loadChart = (config, chart, from) => {
     config.forEach(config => {
-        const configNode = chart.nodes.find(n => config.t == n.type);
-        let node = new NodeUI(chart.canvas, configNode, { x: config.c[0], y: config.c[1] });
-        node.config.forEach((cfg, i) => {
-            cfg.value = config.v[i];
-        });
-        node.render();
-        chart.renderedNodes.push(node);
+        let node = chart.renderedNodes.find(n => n.position.x === config.c[0] && n.position.y === config.c[1]);
+        if (!node) {
+            const configNode = chart.nodes.find(n => config.t == n.type);
+            node = new NodeUI(chart.canvas, configNode, { x: config.c[0], y: config.c[1] });
+            node.config.forEach((cfg, i) => {
+                cfg.value = config.v[i];
+            });
+            node.render();
+            chart.renderedNodes.push(node);
+        }
+        
 
         if (from) {
             const fromDimension = from.getBoundingClientRect();
@@ -59,7 +63,7 @@ const loadChart = (config, chart, from) => {
 
         config.o.forEach((output, outputI) => {
             loadChart(output, chart, node.outputs[outputI]);
-        })
+        });
     })
 }
 
