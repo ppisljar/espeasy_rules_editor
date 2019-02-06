@@ -1,5 +1,7 @@
-<html><head><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/styles.css" inline><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/floweditor.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/node_definitions.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/espeasy.js" inline></script></head><body><div class="editor"></div><script>getConfigNodes().then(devices => {
-                devices.forEach(device => nodes.unshift(device));
+<html><head><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/styles.css" inline><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/floweditor.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/node_definitions.js" inline></script><script src="https://cdn.jsdelivr.net/gh/ppisljar/espeasy_rules_editor@master/dist/espeasy.js" inline></script></head><body><div class="editor"></div><script>getConfigNodes().then((out) => {
+                out.nodes.forEach(device => nodes.unshift(device));
+                const ifElseNode = nodes.find(node => node.type === 'if/else');
+                out.vars.forEach(v => ifElseNode.config[0].values.push(v));
 
                 const chart = new FlowEditor(".editor", nodes, (config, rules) => {
                     storeConfig(config);

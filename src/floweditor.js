@@ -339,6 +339,12 @@ class NodeUI extends Node {
 
 const getCfgUI = cfg => {
     const template = document.createElement('template');
+
+    const getSelectOptions = val => {
+        const selected = val == cfg.value ? 'selected' : '';
+        return `<option ${selected}>${val}</option>`;
+    }
+
     switch (cfg.type) {
         case 'text':
             template.innerHTML = `<div>${cfg.name}: <input type='text' name='${cfg.name}' value='${cfg.value}' /></div>`;
@@ -347,12 +353,19 @@ const getCfgUI = cfg => {
             template.innerHTML = `<div>${cfg.name}: <input type='number' name='${cfg.name}' value='${cfg.value}' /></div>`;
             break;
         case 'select':
-            const getSelectOptions = val => {
-                const selected = val == cfg.value ? 'selected' : '';
-                return `<option ${selected}>${val}</option>`;
-            }
             template.innerHTML = `<div>${cfg.name}: <select name='${cfg.name}'>${cfg.values.map(val => (getSelectOptions(val)))}</select></div>`;
             break;
+        case 'textselect':
+            template.innerHTML = `<div>${cfg.name}<div style="position:relative;width:200px;height:25px;border:0;padding:0;margin:0;">
+            <select style="position:absolute;top:0px;left:0px;width:200px; height:25px;line-height:20px;margin:0;padding:0;"
+                    onchange="document.getElementById('displayValue').value=this.options[this.selectedIndex].text; document.getElementById('idValue').value=this.options[this.selectedIndex].value;">
+                    ${cfg.values.map(val => (getSelectOptions(val)))}
+            </select>
+            <input type="text" name="${cfg.name}" id="displayValue" 
+                   placeholder="add/select a value" onfocus="this.select()"
+                   style="position:absolute;top:0px;left:0px;width:183px;width:180px\9;#width:180px;height:23px; height:21px\9;#height:18px;border:1px solid #556;"  >
+            <input name="idValue" id="idValue" type="hidden">
+          </div></div>`
     }
     return template.content.cloneNode(true);
 }
@@ -413,6 +426,7 @@ class FlowEditor {
             let node = new NodeUI(this.canvas, configNode, { x: ev.x, y: ev.y });
             node.render();
             node.destroy = () => {
+                this.renderedNodes.splice( this.renderedNodes.indexOf(node), 1 );
                 node = null;
             }
             // todo, remove from rendered nodes on destroy

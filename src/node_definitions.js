@@ -69,11 +69,12 @@ const nodes = [
         outputs: [1, 2],
         config: [{
             name: 'variable',
-            type: 'text',
+            type: 'textselect',
+            values: ['Clock#Time'],
         },{
             name: 'equality',
             type: 'select',
-            values: ['=', '<', '>']
+            values: ['=', '<', '>', '<=', '>=', '!=']
         },{
             name: 'value',
             type: 'text',
