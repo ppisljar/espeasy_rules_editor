@@ -14,17 +14,44 @@ const getConfigNodes = async () => {
                 name: 'variable',
                 type: 'select',
                 values: device.TaskValues.map(value => value.Name),
-            },{
+                value: device.TaskValues[0].Name,
+            }, {
+                name: 'euqality',
+                type: 'select',
+                values: ['', '=', '<', '>', '<=', '>=', '!='],
+                value: '',
+            }, {
                 name: 'value',
                 type: 'number',
             }],
             indent: true,
-            toString: function () { return `${this.type}.${this.config[0].value} == ${this.config[1].value}`; },
-            toDsl: function () { return [`on ${this.type}#${this.config[0].value}=${this.config[1].value} do\n%%output%%\nEndon\n`]; }
+            toString: function () { 
+                const comparison = this.config[1].value === '' ? 'changes' : `${this.config[1].value} ${this.config[2].value}`;
+                return `when ${this.type}.${this.config[0].value} ${comparison}`; 
+            },
+            toDsl: function () { 
+                const comparison = this.config[1].value === '' ? '' : `${this.config[1].value}${this.config[2].value}`;
+                return [`on ${this.type}#${this.config[0].value}${comparison} do\n%%output%%\nEndon\n`]; 
+            }
         }];
 
         let fnNames, fnName, name;
         switch (device.Type) {
+            // todo: need access to GPIO number
+            // case 'Switch input - Switch':
+            //     result.push({
+            //         group: 'ACTIONS',
+            //         type: `${device.TaskName} - switch`,
+            //         inputs: [1],
+            //         outputs: [1],
+            //         config: [{
+            //             name: 'value',
+            //             type: 'number',
+            //         }],
+            //         toString: function () { return `${device.TaskName}.level = ${this.config[0].value}`; },
+            //         toDsl: function () { return [`config,task,${device.TaskName},setlevel,${this.config[0].value}`]; }
+            //     });
+            //     break;
             case 'Regulator - Level Control':
                 result.push({
                     group: 'ACTIONS',
