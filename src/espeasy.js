@@ -6,6 +6,9 @@ const getConfigNodes = async () => {
     const devices = await loadDevices();
     const vars = [];
     const nodes = devices.map(device => {
+
+        device.TaskValues.forEach(value => vars.push(`${device.TaskName}#${value.Name}`));
+
         const result = [{
             group: 'TRIGGERS',
             type: device.TaskName,
