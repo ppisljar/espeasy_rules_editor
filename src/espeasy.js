@@ -4,7 +4,8 @@ const loadDevices = async () => {
 
 const getConfigNodes = async () => {
     const devices = await loadDevices();
-    return devices.map(device => {
+    const vars = [];
+    const nodes = devices.map(device => {
         const result = [{
             group: 'TRIGGERS',
             type: device.TaskName,
@@ -192,6 +193,8 @@ const getConfigNodes = async () => {
 
         return result;
     }).flat();
+
+    return { nodes, vars };
 }
 
 const storeConfig = async (config) => {

@@ -339,6 +339,12 @@ class NodeUI extends Node {
 
 const getCfgUI = cfg => {
     const template = document.createElement('template');
+
+    const getSelectOptions = val => {
+        const selected = val == cfg.value ? 'selected' : '';
+        return `<option ${selected}>${val}</option>`;
+    }
+
     switch (cfg.type) {
         case 'text':
             template.innerHTML = `<div>${cfg.name}: <input type='text' name='${cfg.name}' value='${cfg.value}' /></div>`;
@@ -347,17 +353,9 @@ const getCfgUI = cfg => {
             template.innerHTML = `<div>${cfg.name}: <input type='number' name='${cfg.name}' value='${cfg.value}' /></div>`;
             break;
         case 'select':
-            const getSelectOptions = val => {
-                const selected = val == cfg.value ? 'selected' : '';
-                return `<option ${selected}>${val}</option>`;
-            }
             template.innerHTML = `<div>${cfg.name}: <select name='${cfg.name}'>${cfg.values.map(val => (getSelectOptions(val)))}</select></div>`;
             break;
         case 'textselect':
-            const getSelectOptions = val => {
-                const selected = val == cfg.value ? 'selected' : '';
-                return `<option ${selected}>${val}</option>`;
-            }
             template.innerHTML = `<div style="position:relative;width:200px;height:25px;border:0;padding:0;margin:0;">
             <select style="position:absolute;top:0px;left:0px;width:200px; height:25px;line-height:20px;margin:0;padding:0;"
                     onchange="document.getElementById('displayValue').value=this.options[this.selectedIndex].text; document.getElementById('idValue').value=this.options[this.selectedIndex].value;">
